@@ -72,6 +72,8 @@ class PIR {
       args: ["-g", this.config.gpio]
     };
 
+    if (this.config.triggerMode === "H") options.args.push("-c");
+
     this.pir = new PythonShell("MotionSensor.py", options);
     this.callback("PIR_STARTED");
     console.log("[MMM-Pir] [LIB] [PIR] Started!");
