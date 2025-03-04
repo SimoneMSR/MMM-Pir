@@ -77,7 +77,8 @@ To display the module insert it in the config.js file.
     Cron: {
       mode: 0,
       ON: [],
-      OFF: []
+      OFF: [],
+      applyOnStart : true
     },
     Touch: {
       mode: 3
@@ -194,6 +195,7 @@ This is the rule to turn your screen on and off based on a set time event
  | mode | cron mode (see bellow) | Number | 0 |
  | ON | cron times to turn ON Screen | Array | [] |
  | OFF | cron time to turn OFF Screen | Array | [] |
+ | applyOnStart | when true, activates rules valid for the current day, even if they refer to a moment befor the startup | Boolean | false |
 
 * Available mode:
     - `mode: 0` - Disable Cron using.
@@ -228,6 +230,8 @@ This number define the day:
   - `4`: Thursday
   - `5`: Friday
   - `6`: Saturday
+
+If you want that rules being valid for the day of startup should be appplied even if they happened earlier than now, set the `applyOnStart` to `true`.
 
 ##### Sample
 sample if you want to create an event from Monday to Thursday at 07h45:
@@ -299,6 +303,8 @@ OFF: [
   }
 ]
 ```
+
+If at the moment of startup the day is, say, Monday, and time is 18:00, but you want the screen to shut down anyway, set  `applyOnStart` to `true`. 
 
 Let's apply your own rules !
 Don't be stupid! Don't create an ON event equal to OFF event

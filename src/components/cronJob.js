@@ -2,6 +2,19 @@ var log = () => { /* do nothing */ };
 var cron = require("node-cron");
 var parser = require("cron-parser");
 
+function compareMomentAndDate (moment, date) {
+  return toSeconds(moment) - (date.getHours() * 60 + date.getMinutes());
+}
+
+function compareMoments (moment1, moment2) {
+  return toSeconds(moment1) - toSeconds(moment2);
+
+}
+
+function toSeconds (moment) {
+  return moment.hour * 60 + moment.minute;
+}
+
 class cronJob {
   constructor (config, callback) {
     this.config = config;
@@ -11,7 +24,8 @@ class cronJob {
       mode: 0,
       ON: false,
       OFF: false,
-      started: false
+      started: false,
+      applyOnStart: false
     };
     this.cronState = callback.cronState;
     this.error = callback.error;
@@ -43,6 +57,7 @@ class cronJob {
         this.Manager.mode = 0;
         break;
     }
+    if (this.config.applyOnStart) this.Manager.applyOnStart = this.config.applyOnStart;
 
     if (!this.Manager.mode) return;
     if (!this.config.ON) return console.warn("[MMM-Pir] [LIB] [CRON] ON feature not detected!");
@@ -136,25 +151,49 @@ class cronJob {
 
     this.cronON.forEach((on) => {
       cron.schedule(on, () => {
-        log("[ON] It's time to turn ON");
-        this.Manager.ON = true;
-        this.Manager.OFF = false;
-        this.cronState(this.Manager);
+        this.turnOn();
       });
       log("[ON] Added:", on);
     });
 
     this.cronOFF.forEach((off) => {
       cron.schedule(off, () => {
-        log("[OFF] It's time to turn OFF");
-        this.Manager.ON = false;
-        this.Manager.OFF = true;
-        this.cronState(this.Manager);
+        this.turnOff();
       });
       log("[OFF] Added:", off);
     });
 
     this.cronState(this.Manager);
+    if (this.Manager.applyOnStart) {
+      setTimeout(() => {
+        var now = new Date();
+        var onForNow = this.config.ON.filter((on) => on.dayOfWeek.includes(now.getDay()) && compareMomentAndDate(on, now) <= 0).sort(compareMoments).pop();
+        if (onForNow) {
+          var allOffForNow = this.config.OFF.filter((off) => off.dayOfWeek.includes(now.getDay()) && compareMoments(onForNow, off) < 0).sort(compareMoments);
+          if (allOffForNow.length === 0 || allOffForNow.find((off) => compareMomentAndDate(off, now) > 0)) {
+            this.turnOn();
+          } else if (allOffForNow.find((off) => compareMomentAndDate(off, now) < 0)) this.turnOff();
+        } else {
+          this.turnOff();
+        }
+      }, 2000);
+    }
+  }
+
+  _turn (on) {
+    var on_off = on ? "ON" : "OFF";
+    log(`[${on_off}] It's time to turn ${on_off}`);
+    this.Manager.ON = on;
+    this.Manager.OFF = !on;
+    this.cronState(this.Manager);
+  }
+
+  turnOn () {
+    this._turn(true);
+  }
+
+  turnOff () {
+    this._turn(false);
   }
 
   isObject (o) {
