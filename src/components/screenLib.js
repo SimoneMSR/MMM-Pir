@@ -478,6 +478,7 @@ class SCREEN {
     } else {
       this.screen.power = onOff;
       this.SendScreenPowerState();
+      this.sendSocketNotification("SCREEN_POWERSTATUS", this.screen.power);
     }
   }
 
@@ -564,6 +565,7 @@ class SCREEN {
                     } else {
                       this.screen.power = true;
                       this.SendScreenPowerState();
+                      this.sendSocketNotification("SCREEN_POWERSTATUS", this.screen.power);
                     }
                   }
                 });
@@ -571,6 +573,7 @@ class SCREEN {
             } else {
               this.screen.power = true;
               this.SendScreenPowerState();
+              this.sendSocketNotification("SCREEN_POWERSTATUS", this.screen.power);
             }
           });
         } else {
@@ -595,6 +598,7 @@ class SCREEN {
                     } else {
                       this.screen.power = false;
                       this.SendScreenPowerState();
+                      this.sendSocketNotification("SCREEN_POWERSTATUS", this.screen.power);
                     }
                   }
                 });
@@ -602,6 +606,7 @@ class SCREEN {
             } else {
               this.screen.power = false;
               this.SendScreenPowerState();
+              this.sendSocketNotification("SCREEN_POWERSTATUS", this.screen.power);
             }
           });
         }
