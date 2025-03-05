@@ -125,7 +125,8 @@ module.exports = NodeHelper.create({
       mode: this.config.Cron.mode,
       ON: this.config.Cron.ON,
       OFF: this.config.Cron.OFF,
-      applyOnStart: this.config.Cron.applyOnStart
+      applyOnStart: this.config.Cron.applyOnStart,
+      strict: this.config.Cron.strict
     };
 
     let governorConfig = {

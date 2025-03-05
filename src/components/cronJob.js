@@ -25,7 +25,8 @@ class cronJob {
       ON: false,
       OFF: false,
       started: false,
-      applyOnStart: false
+      applyOnStart: false,
+      strict: false
     };
     this.cronState = callback.cronState;
     this.error = callback.error;
@@ -58,6 +59,7 @@ class cronJob {
         break;
     }
     if (this.config.applyOnStart) this.Manager.applyOnStart = this.config.applyOnStart;
+    if (this.config.strict) this.Manager.strict = this.config.strict;
 
     if (!this.Manager.mode) return;
     if (!this.config.ON) return console.warn("[MMM-Pir] [LIB] [CRON] ON feature not detected!");
@@ -135,7 +137,7 @@ class cronJob {
   }
 
   start () {
-    if (!this.Manager.mode || (!this.cronON.length && !this.cronOFF.length)) return;
+    if (!this.Manager.mode || (!this.cronON.length && !this.cronOFF.length) && this.Manager.strict === false) return;
     if (!this.cronON.length && this.cronOFF.length) {
       this.error("ON feature missing or failed!");
       console.error("[MMM-Pir] [LIB] [CRON] ON feature missing or failed!");
@@ -174,9 +176,16 @@ class cronJob {
             this.turnOn();
           } else if (allOffForNow.find((off) => compareMomentAndDate(off, now) < 0)) this.turnOff();
         } else {
-          this.turnOff();
+          if (this.Manager.strict) this.turnOff();
+          else this.turnOn();
         }
       }, 2000);
+    }
+    if (this.Manager.strict) {
+      cron.schedule("0 0 0 * * *", () => {
+        var now = new Date();
+        if (this.config.ON.filter((on) => on.dayOfWeek.includes(now.getDay())).length === 0) this.turnOff();
+      });
     }
   }
 

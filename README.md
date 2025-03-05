@@ -78,7 +78,8 @@ To display the module insert it in the config.js file.
       mode: 0,
       ON: [],
       OFF: [],
-      applyOnStart : true
+      applyOnStart : false,
+      strict : false
     },
     Touch: {
       mode: 3
@@ -196,6 +197,7 @@ This is the rule to turn your screen on and off based on a set time event
  | ON | cron times to turn ON Screen | Array | [] |
  | OFF | cron time to turn OFF Screen | Array | [] |
  | applyOnStart | when true, activates rules valid for the current day, even if they refer to a moment befor the startup | Boolean | false |
+ | strict | when true, if no rule exists for the day, switch-off is triggered | Boolean | false
 
 * Available mode:
     - `mode: 0` - Disable Cron using.
