@@ -140,6 +140,7 @@ Module.register("MMM-Pir", {
         });
         break;
       case "PIR_DETECTED-ANIMATE":
+        this.sendNotification("MMM_PIR-USER_PRESENCE");
         this.screenDisplay.animateModule();
         break;
       case "GOVERNOR_ERROR":
