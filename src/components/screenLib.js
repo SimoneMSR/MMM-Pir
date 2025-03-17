@@ -15,7 +15,7 @@ const modeLibMap = {
   2: "xrandr",
   3: "wlr-randr",
   4: "HDMI CEC",
-  5: "ddctuil",
+  5: "ddcutil",
   6: "dpms linux",
   7: "labwc",
   8: "pinctrl"
