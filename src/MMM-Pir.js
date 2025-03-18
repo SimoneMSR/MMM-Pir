@@ -34,7 +34,8 @@ Module.register("MMM-Pir", {
     Pir: {
       mode: 0,
       gpio: 21,
-      triggerMode: "LH"
+      triggerMode: "LH",
+      skipToggleScreen: false
     },
     Motion: {
       deviceId: 0,
@@ -139,9 +140,9 @@ Module.register("MMM-Pir", {
           timer: 15000
         });
         break;
-      case "PIR_DETECTED-ANIMATE":
+      case "USER_PRESENCE":
         this.sendNotification("MMM_PIR-USER_PRESENCE");
-        this.screenDisplay.animateModule();
+        if (payload?.animate) this.screenDisplay.animateModule();
         break;
       case "GOVERNOR_ERROR":
         this.sendNotification("SHOW_ALERT", {

@@ -11,7 +11,8 @@ class PIR {
       debug: false,
       gpio: 21,
       mode: 0,
-      triggerMode: "LH"
+      triggerMode: "LH",
+      skipToggleScreen: false
     };
     this.config = Object.assign({}, this.default, this.config);
     if (this.config.debug) log = (...args) => { console.log("[MMM-Pir] [LIB] [PIR]", ...args); };
@@ -87,7 +88,7 @@ class PIR {
           log("Debug: Motion detect ready is", this.pirReadyToDetect);
           if (this.pirReadyToDetect) {
             log("Motion Detected");
-            this.callback("PIR_DETECTED");
+            this.callback("PIR_DETECTED", { skipToggleScreen: this.config.skipToggleScreen === true });
             if (this.config.triggerMode === "LH") {
               this.pirReadyToDetect = false;
               log("Debug: Set motion detect ready to:", this.pirReadyToDetect);
@@ -181,7 +182,7 @@ class PIR {
             this.oldstate = value;
             log(`Sensor read value: ${value}`);
             if (value === 1) {
-              this.callback("PIR_DETECTED");
+              this.callback("PIR_DETECTED", { skipToggleScreen: this.config.skipToggleScreen === true });
               log("Detected presence");
             }
           }

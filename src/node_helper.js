@@ -72,8 +72,12 @@ module.exports = NodeHelper.create({
       pir: (noti, params) => {
         log("[CALLBACK] Pir:", noti, params || "");
         if (noti === "PIR_DETECTED") {
-          this.screen.wakeup();
-          this.sendSocketNotification("PIR_DETECTED-ANIMATE");
+          if (params?.skipToggleScreen) {
+            this.sendSocketNotification("USER_PRESENCE");
+          } else {
+            this.screen.wakeup();
+            this.sendSocketNotification("USER_PRESENCE", { animate: true });
+          }
         } else {
           this.sendSocketNotification(noti, params);
         }
@@ -102,7 +106,8 @@ module.exports = NodeHelper.create({
       debug: this.config.debug,
       gpio: this.config.Pir.gpio,
       mode: this.config.Pir.mode,
-      triggerMode: this.config.Pir.triggerMode
+      triggerMode: this.config.Pir.triggerMode,
+      skipToggleScreen: this.config.Pir.skipToggleScreen
     };
 
     let screenConfig = {

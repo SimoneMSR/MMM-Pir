@@ -67,7 +67,8 @@ To display the module insert it in the config.js file.
     Pir: {
       mode: 0,
       gpio: 21,
-      triggerMode : "LH"
+      triggerMode : "LH",
+      skipToggleScreen : false
     },
     Motion: {
       deviceId: 0,
@@ -157,6 +158,7 @@ For some displays, the `getvcp` commands cause the display to turn-on. In these 
  | mode | Detection mode (see bellow) | Number | 0 |
  | gpio | BCM-number of the sensor pin. | Number | 21 |
  | triggerMode | Triggering mode (see below) | String | "LH" |
+ | skipToggleScreen | Prevents the screen to turn on after detection | Boolean | false |
 
 * Available mode:
     - `mode: 0` - use node-libgpiod library
@@ -167,6 +169,8 @@ For some displays, the `getvcp` commands cause the display to turn-on. In these 
   - `triggerMode: 'H'` - motion signal is triggered whenever the sensor sends a HIGH (1, motion) message
 
  ⚠ You can disable PIR Sensor detection by using `gpio: 0`
+
+ If you want to use the sensor just to send a notification for presence, set `skipToggleScreen` to `true`
 
 ------
 #### Motion Configuration
